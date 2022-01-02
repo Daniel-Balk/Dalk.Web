@@ -15,3 +15,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.ClassPageWebServer.WebServer.ListenWebPage")]
 [assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~P:Dalk.Web.HttpServer.HttpRequest.Cookies")]
 [assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.RenderFragment.BuildHtml~System.String")]
+[assembly: SuppressMessage("Style", "IDE0066:Convert switch statement to expression", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.ClassPageWebServer.WebServer.HandleRequest(System.Object)")]

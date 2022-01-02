@@ -1,5 +1,6 @@
 ﻿using Dalk.Web;
 using Dalk.Web.ClassPageWebServer;
+using Dalk.Web.ClassPageWebServer.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,17 @@ namespace Test
         public override string GetCompletePage(WebPage page)
         {
             HtmlBuilder hb = new();
-            hb.WriteMarkupString((MarkupString)page.BuildHtml());
+            HtmlPage html = new();
+            PageHead head = new();
+            //head.AddStylesheet("/1style.css");
+            html.Components.Add(head);
+            hb.AddComponent(html);
+            hb.WriteMarkupString(page.BuildHtml());
             return hb.ToString();
+        }
+        public override string Get404Page()
+        {
+            return GetCompletePage(new Page404());
         }
     }
 }

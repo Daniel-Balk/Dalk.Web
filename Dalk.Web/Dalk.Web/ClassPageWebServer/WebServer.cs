@@ -1,6 +1,8 @@
 ﻿using Dalk.Web.HttpServer;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 
@@ -15,12 +17,14 @@ namespace Dalk.Web.ClassPageWebServer
         private HttpListener HttpListener { get; set; }
         public List<WebPage> Pages { get; set; }
         public LayoutPage Layout { get; set; }
+        public bool EnableWwwroot { get; set; }
 
         public WebServer()
         {
             RenderThreads = new List<Thread>();
             Pages = new List<WebPage>();
             Layout = new LayoutPage();
+            EnableWwwroot = true;
         }
 
         public void Run()
@@ -71,17 +75,58 @@ namespace Dalk.Web.ClassPageWebServer
                 Info($"Accesslog: Access from {tcpSender.Client.RemoteEndPoint}");
                 var response = request.GetResponse();
                 string html = null;
-                Pages.ForEach(p =>
+                byte[] bytes;
+                bool isFile = false;
+                string fp = null;
+                var wp = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/wwwroot";
+                if (!Directory.Exists(wp))
+                    Directory.CreateDirectory(wp);
+                        
+                var pp = wp + request.Path;
+                var fpp = Path.GetFullPath(pp);
+                if (fpp.StartsWith(Path.GetFullPath(wp)))
                 {
-                    if (p.MatchesRoute(request.Path))
+                    if (File.Exists(fpp))
                     {
-                        html = Layout.GetCompletePage(p);
+                        fp = fpp;
+                        isFile = true;
                     }
-                });
-                if (html == null)
-                    html = Layout.Get404Page();
-                var bytes = Encoding.UTF8.GetBytes(html);
-                response.ContentLenght = bytes.Length;
+                }
+
+
+                if (isFile)
+                {
+                    bytes = File.ReadAllBytes(fp);
+                    switch (Path.GetExtension(fp))
+                    {
+                        case ".css":
+                            response.ContentType = "text/css";
+                            break;
+                        case ".js":
+                            response.ContentType = "text/javascript";
+                            break;
+
+                        default:
+                            response.ContentType = "application/octet-stream";
+                            break;
+                    }
+                    response.ContentLenght = bytes.Length;
+                }
+                else
+                {
+                    Pages.ForEach(p =>
+                    {
+                        if (p.MatchesRoute(request.Path))
+                        {
+                            p.Initialize(request);
+                            html = Layout.GetCompletePage(p);
+                        }
+                    });
+                    if (html == null)
+                        html = Layout.Get404Page();
+                    bytes = Encoding.UTF8.GetBytes(html);
+                    response.ContentLenght = bytes.Length;
+                }
                 response.Write(bytes);
                 response.Send();
                 Thread.CurrentThread.Interrupt();

@@ -12,7 +12,7 @@ namespace Dalk.Web.ClassPageWebServer
 
         public virtual string GetHtml(HtmlBuilder builder)
         {
-            builder.WriteString("<b>NoXSS, No Content</b>");
+            builder.AddComponents(Components);
             return builder.ToString();
         }
 
@@ -25,6 +25,11 @@ namespace Dalk.Web.ClassPageWebServer
                 .Replace("≤", "&le;")
                 .Replace("≥", "&ge;")
                 .Replace(">", "&gt;");
+        }
+
+        public RenderFragment()
+        {
+            Components = new List<RenderFragment>();
         }
     }
 }
