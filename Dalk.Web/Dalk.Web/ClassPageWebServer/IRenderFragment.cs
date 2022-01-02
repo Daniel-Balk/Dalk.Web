@@ -1,4 +1,4 @@
-﻿namespace Dalk.Web
+﻿namespace Dalk.Web.ClassPageWebServer
 {
     public interface IRenderFragment
     {

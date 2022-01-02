@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Dalk.Web
+namespace Dalk.Web.ClassPageWebServer
 {
     public class HtmlBuilder
     {
