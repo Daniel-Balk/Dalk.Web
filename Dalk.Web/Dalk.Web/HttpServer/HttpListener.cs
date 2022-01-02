@@ -26,7 +26,10 @@ namespace Dalk.Web.HttpServer
         {
             var tcp = listener.AcceptTcpClient();
             var bytes = ReadAllBytes(tcp);
-            HttpRequest request = new HttpRequest(SplitByteArray(RemoveValues(bytes, 0x0d), 0x0a).ToArray(),bytes);
+            HttpRequest request = new HttpRequest(SplitByteArray(RemoveValues(bytes, 0x0d), 0x0a).ToArray(),bytes)
+            {
+                sender = tcp
+            };
             request.response = new HttpResponse(tcp);
             return request;
         }

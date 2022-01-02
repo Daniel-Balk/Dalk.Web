@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 
 namespace Dalk.Web.HttpServer
@@ -102,6 +103,11 @@ namespace Dalk.Web.HttpServer
         public HttpResponse GetResponse()
         {
             return response;
+        }
+        internal TcpClient sender;
+        public TcpClient GetSender()
+        {
+            return sender;
         }
     }
 }

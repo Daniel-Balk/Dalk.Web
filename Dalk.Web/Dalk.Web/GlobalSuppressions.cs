@@ -11,3 +11,5 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.HttpServer.HttpListener.SplitByteArray(System.Collections.Generic.IEnumerable{System.Byte},System.Byte)~System.Collections.Generic.IEnumerable{System.Byte[]}")]
 [assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.WebClient.GetDataFromResponse(System.Net.HttpWebResponse)~System.Byte[]")]
 [assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~F:Dalk.Web.HttpServer.HttpResponse.sendData")]
+[assembly: SuppressMessage("Style", "IDE0017:Simplify object initialization", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.ClassPageWebServer.WebServer.Run")]
+[assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.ClassPageWebServer.WebServer.ListenWebPage")]
