@@ -4,5 +4,6 @@ namespace Dalk.Web
 {
     public class Headers : Dictionary<string, string>
     {
+        
     }
 }

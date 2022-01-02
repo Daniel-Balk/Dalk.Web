@@ -34,7 +34,7 @@ namespace Dalk.Web
         public byte[] Post(string url, byte[] data, out int statusCode, string contentType = "application/x-www-form-urlencoded")
         {
             ConstructHeaders(url);
-            var wr = ConstructWebRequest(url: url, method: HttpMethod.Post, headers: Headers, contentType: contentType);
+            var wr = ConstructWebRequest(url: url, method: HttpMethod.POST, headers: Headers, contentType: contentType);
             wr.ContentLength = data.Length;
             var ds = wr.GetRequestStream();
             ds.Write(data, 0, data.Length);
@@ -56,7 +56,7 @@ namespace Dalk.Web
         public byte[] Get(string url, out int statusCode)
         {
             ConstructHeaders(url);
-            var wr = ConstructWebRequest(url: url, method: HttpMethod.Get, headers: Headers, contentType: null);
+            var wr = ConstructWebRequest(url: url, method: HttpMethod.GET, headers: Headers, contentType: null);
 
             HttpWebResponse response = (HttpWebResponse)wr.GetResponse();
             var rd = GetDataFromResponse(response);
