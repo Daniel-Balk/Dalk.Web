@@ -26,6 +26,8 @@ namespace Test
             }*/
             WebServer ws = new();
             ws.Port = 5000;
+            ws.Layout = new Layout();
+            ws.Pages.Add(new IndexPage());
             ws.Log += new LogEventHandler((l, m) =>
             {
                 switch (l)

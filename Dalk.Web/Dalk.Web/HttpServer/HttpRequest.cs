@@ -30,6 +30,32 @@ namespace Dalk.Web.HttpServer
             }
         }
 
+        public Cookie[] Cookies
+        {
+            get
+            {
+                List<Cookie> cookies = new List<Cookie>();
+                if (Headers.ContainsKey("Cookie"))
+                {
+                    var cks = Headers["Cookie"].Split(new string[] { ";" },StringSplitOptions.RemoveEmptyEntries);
+                    cks.ToList().ForEach(c =>
+                    {
+                        var ck = c.Trim().TrimEnd();
+                        var sp = ck.Split('=');
+                        var key= sp.FirstOrDefault();
+                        var value = ck.Remove(0, key.Length + 1);
+                        Cookie k = new Cookie(key.Trim().TrimEnd(), value.TrimEnd().Trim());
+                        cookies.Add(k);
+                    });
+                }
+                else
+                {
+                    
+                }
+                return cookies.ToArray();
+            }
+        }
+
         private List<byte> ctn;
 
         public HttpRequest(byte[][] vs, byte[] bytes)

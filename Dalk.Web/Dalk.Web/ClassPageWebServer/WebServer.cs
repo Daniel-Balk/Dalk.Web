@@ -16,11 +16,13 @@ namespace Dalk.Web.ClassPageWebServer
         public int Port { get; set; } = 5000;
         private HttpListener HttpListener { get; set; }
         public List<WebPage> Pages { get; set; }
+        public LayoutPage Layout { get; set; }
 
         public WebServer()
         {
             RenderThreads = new List<Thread>();
             Pages = new List<WebPage>();
+            Layout = new LayoutPage();
         }
 
         public void Run()
@@ -36,10 +38,17 @@ namespace Dalk.Web.ClassPageWebServer
             HttpListener.Start();
             while (true)
             {
-                var request = HttpListener.AcceptRequest();
-                Thread handleThread = new Thread(HandleRequest);
-                ThreadAdd(handleThread);
-                handleThread.Start(request);
+                try
+                {
+                    var request = HttpListener.AcceptRequest();
+                    Thread handleThread = new Thread(HandleRequest);
+                    ThreadAdd(handleThread);
+                    handleThread.Start(request);
+                }
+                catch (Exception ex)
+                {
+                    Error(ex.ToString());
+                }
             }
         }
 
@@ -57,15 +66,32 @@ namespace Dalk.Web.ClassPageWebServer
 
         private void HandleRequest(object obj)
         {
-            var request = obj as HttpRequest;
-            var tcpSender = request.GetSender();
-            Info($"Accesslog: Access from {tcpSender.Client.RemoteEndPoint}");
-            var response = request.GetResponse();
-            var bytes = Encoding.UTF8.GetBytes($"<h1>WebServer with multithreading!</h1><p>Thread: {Thread.CurrentThread.ManagedThreadId}</p>");
-            response.ContentLenght = bytes.Length;
-            response.Write(bytes);
-            response.Send();
-            Thread.CurrentThread.Interrupt();
+            try
+            {
+                var request = obj as HttpRequest;
+                var tcpSender = request.GetSender();
+                Info($"Accesslog: Access from {tcpSender.Client.RemoteEndPoint}");
+                var response = request.GetResponse();
+                string html = null;
+                Pages.ForEach(p =>
+                {
+                    if (p.MatchesRoute(request.Path))
+                    {
+                        html = Layout.GetCompletePage(p);
+                    }
+                });
+                if (html == null)
+                    html = Layout.Get404Page();
+                var bytes = Encoding.UTF8.GetBytes(html);
+                response.ContentLenght = bytes.Length;
+                response.Write(bytes);
+                response.Send();
+                Thread.CurrentThread.Interrupt();
+            }
+            catch (Exception ex)
+            {
+                Error(ex.ToString());
+            }
         }
 
         public event LogEventHandler Log;

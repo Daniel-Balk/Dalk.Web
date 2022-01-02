@@ -13,3 +13,5 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~F:Dalk.Web.HttpServer.HttpResponse.sendData")]
 [assembly: SuppressMessage("Style", "IDE0017:Simplify object initialization", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.ClassPageWebServer.WebServer.Run")]
 [assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.ClassPageWebServer.WebServer.ListenWebPage")]
+[assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~P:Dalk.Web.HttpServer.HttpRequest.Cookies")]
+[assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.RenderFragment.BuildHtml~System.String")]
