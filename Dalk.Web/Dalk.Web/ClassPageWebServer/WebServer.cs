@@ -15,15 +15,17 @@ namespace Dalk.Web.ClassPageWebServer
         public int Threads { get; set; } = 32;
         public int Port { get; set; } = 5000;
         private HttpListener HttpListener { get; set; }
-        public List<WebPage> Pages { get; set; }
-        public LayoutPage Layout { get; set; }
+        List<Type> PageTypes { get; set; }
+        List<WebPage> DefaultPages { get; set; }
+        Type LayoutPageType { get; set; }
         public bool EnableWwwroot { get; set; }
 
         public WebServer()
         {
             RenderThreads = new List<Thread>();
-            Pages = new List<WebPage>();
-            Layout = new LayoutPage();
+            DefaultPages = new List<WebPage>();
+            PageTypes = new List<Type>();
+            LayoutPageType = typeof(LayoutPage);
             EnableWwwroot = true;
         }
 
@@ -32,6 +34,17 @@ namespace Dalk.Web.ClassPageWebServer
             ListenerThread = new Thread(ListenWebPage);
             ListenerThread.Name = "Listener";
             ListenerThread.Start();
+        }
+
+        public void RegisterPage<T>() where T : WebPage
+        {
+            PageTypes.Add(typeof(T));
+            DefaultPages.Add((WebPage)Activator.CreateInstance(typeof(T)));
+        }
+
+        public void SetLayout<T>() where T : LayoutPage
+        {
+            LayoutPageType = typeof(T);
         }
 
         private void ListenWebPage()
@@ -118,16 +131,20 @@ namespace Dalk.Web.ClassPageWebServer
                 }
                 else
                 {
-                    Pages.ForEach(p =>
+                    int i = 0;
+                    var layout = (LayoutPage)Activator.CreateInstance(LayoutPageType);
+                    DefaultPages.ForEach(p =>
                     {
                         if (p.MatchesRoute(request.Path))
                         {
-                            p.Initialize(request);
-                            html = Layout.GetCompletePage(p);
+                            var page = (WebPage)Activator.CreateInstance(PageTypes[i]);
+                            page.Initialize(request);
+                            html = layout.GetCompletePage(page);
                         }
+                        i++;
                     });
                     if (html == null)
-                        html = Layout.Get404Page();
+                        html = layout.Get404Page();
                     bytes = Encoding.UTF8.GetBytes(html);
                     response.ContentLenght = bytes.Length;
                 }

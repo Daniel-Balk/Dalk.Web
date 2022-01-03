@@ -56,7 +56,7 @@ namespace Dalk.Web.HttpServer
         }
 
         private const string Server = "Dalk.Web HTTPListener";
-        private static Random random = new Random();
+        private static readonly Random random = new Random();
         private void Init()
         {
             sendData = new List<byte>();

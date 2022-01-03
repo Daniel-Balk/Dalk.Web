@@ -3,6 +3,7 @@ using Dalk.Web.ClassPageWebServer;
 using Dalk.Web.HttpServer;
 using Logging.Net;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -26,9 +27,9 @@ namespace Test
             }*/
             WebServer ws = new();
             ws.Port = 5000;
-            ws.Layout = new Layout();
-            ws.Pages.Add(new IndexPage());
-            ws.Log += new LogEventHandler((l, m) =>
+            ws.SetLayout<Layout>();
+            ws.RegisterPage<IndexPage>();
+                ws.Log += new LogEventHandler((l, m) =>
             {
                 switch (l)
                 {
