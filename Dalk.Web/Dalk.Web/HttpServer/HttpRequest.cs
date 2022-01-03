@@ -98,12 +98,19 @@ namespace Dalk.Web.HttpServer
             var hab = vs.ToList();
             hab.RemoveAt(0);
             bool switchToBody = false;
+            int i = 0;
             hab.ForEach(x =>
             {
                 var xs = Encoding.UTF8.GetString(x);
                 if (string.IsNullOrWhiteSpace(xs))
                 {
-                    switchToBody = true;
+                    if (i + 1 < hab.Count)
+                    {
+                        if (!Encoding.UTF8.GetString(hab[i + 1]).Contains(": "))
+                        {
+                            switchToBody = true;
+                        }
+                    }
                 }
                 if (!switchToBody)
                 {

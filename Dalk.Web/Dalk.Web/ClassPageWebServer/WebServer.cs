@@ -37,6 +37,7 @@ namespace Dalk.Web.ClassPageWebServer
         private void ListenWebPage()
         {
             HttpListener = new HttpListener(Port);
+            HttpListener.LogError += Error;
             HttpListener.Start();
             while (true)
             {
@@ -104,6 +105,9 @@ namespace Dalk.Web.ClassPageWebServer
                             break;
                         case ".js":
                             response.ContentType = "text/javascript";
+                            break;
+                        case ".html":
+                            response.ContentType = "text/html";
                             break;
 
                         default:

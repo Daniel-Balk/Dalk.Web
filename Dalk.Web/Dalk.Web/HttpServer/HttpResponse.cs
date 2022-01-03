@@ -55,11 +55,23 @@ namespace Dalk.Web.HttpServer
             Init();
         }
 
+        private const string Server = "Dalk.Web HTTPListener";
+        private static Random random = new Random();
         private void Init()
         {
             sendData = new List<byte>();
             Headers = new Headers();
-            ContentType = "text/html; charset=UTF-8";
+            ContentType = "text/html";
+            Headers["Server"] = Server;
+            string guid = "";
+            var chrs = "1234567890abcdef";
+            for (int i = 0; i < 9; i++)
+            {
+                guid += chrs[random.Next(chrs.Length)];
+            }
+            Headers["ETag"] = $@"W/""{guid}-a""";
+            Headers["Date"] = DateTime.Now.ToString();
+            Headers["Transfer-Encoding"] = "UTF8";
         }
 
         List<byte> sendData;
@@ -102,6 +114,8 @@ namespace Dalk.Web.HttpServer
                 InitResponse();
                 byte[] bytes = sendData.ToArray();
                 tcp.GetStream().Write(bytes, 0, bytes.Length);
+                tcp.GetStream().Close();
+                tcp.Close();
                 sent = true;
             }
             else

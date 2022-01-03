@@ -16,10 +16,13 @@ namespace Test
             HtmlBuilder hb = new();
             HtmlPage html = new();
             PageHead head = new();
-            //head.AddStylesheet("/1style.css");
+            PageBody body = new();
+            head.AddStylesheet("/style.css");
+            body.Components.Add(page);
+
             html.Components.Add(head);
+            html.Components.Add(body);
             hb.AddComponent(html);
-            hb.WriteMarkupString(page.BuildHtml());
             return hb.ToString();
         }
         public override string Get404Page()

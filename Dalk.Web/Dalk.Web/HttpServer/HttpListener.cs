@@ -24,14 +24,22 @@ namespace Dalk.Web.HttpServer
 
         public HttpRequest AcceptRequest()
         {
-            var tcp = listener.AcceptTcpClient();
-            var bytes = ReadAllBytes(tcp);
-            HttpRequest request = new HttpRequest(SplitByteArray(RemoveValues(bytes, 0x0d), 0x0a).ToArray(),bytes)
+            try
             {
-                sender = tcp
-            };
-            request.response = new HttpResponse(tcp);
-            return request;
+                var tcp = listener.AcceptTcpClient();
+                var bytes = ReadAllBytes(tcp);
+                HttpRequest request = new HttpRequest(SplitByteArray(RemoveValues(bytes, 0x0d), 0x0a).ToArray(), bytes)
+                {
+                    sender = tcp
+                };
+                request.response = new HttpResponse(tcp);
+                return request;
+            }
+            catch (Exception ex)
+            {
+                LogError?.Invoke(ex.ToString());
+                return AcceptRequest();
+            }
         }
 
         private static byte[] ReadAllBytes(TcpClient client)
@@ -73,5 +81,7 @@ namespace Dalk.Web.HttpServer
             lst.RemoveAll(x => x == key);
             return lst.ToArray();                
         }
+
+        public event Action<string> LogError;
     }
 }
