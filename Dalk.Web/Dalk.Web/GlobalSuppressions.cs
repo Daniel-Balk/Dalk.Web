@@ -18,3 +18,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.ClassPageWebServer.WebServer.Debug(System.String)")]
 [assembly: SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.ClassPageWebServer.WebServer.Warn(System.String)")]
 [assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~F:Dalk.Web.HttpServer.HttpResponse.random")]
+[assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "<Pending>", Scope = "member", Target = "~M:Dalk.Web.ClassPageWebServer.RenderFragment.BuildHtml~System.String")]
