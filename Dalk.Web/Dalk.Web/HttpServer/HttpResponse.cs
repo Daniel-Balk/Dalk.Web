@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -9,6 +10,7 @@ namespace Dalk.Web.HttpServer
 {
     public class HttpResponse
     {
+        public Stream GetStream() => tcp.GetStream();
         private const string HttpVerion = "HTTP/1.1";
         private readonly TcpClient tcp;
         int sci = 200;
@@ -107,16 +109,35 @@ namespace Dalk.Web.HttpServer
         }
 
         bool sent = false;
-        public void Send()
+        public void Send(bool close = true)
         {
             if (!sent)
             {
                 InitResponse();
                 byte[] bytes = sendData.ToArray();
                 tcp.GetStream().Write(bytes, 0, bytes.Length);
-                tcp.GetStream().Close();
-                tcp.Close();
-                sent = true;
+                if (close)
+                    tcp.GetStream().Close();
+                if (close)
+                    tcp.Close();
+            }
+            else
+            {
+                throw new ResponseAlreadySentException("Response has already been sent!");
+            }
+        }
+
+        public async Task SendAsync(bool close = true)
+        {
+            if (!sent)
+            {
+                InitResponse();
+                byte[] bytes = sendData.ToArray();
+                await tcp.GetStream().WriteAsync(bytes, 0, bytes.Length);
+                if (close)
+                    tcp.GetStream().Close();
+                if (close)
+                    tcp.Close();
             }
             else
             {

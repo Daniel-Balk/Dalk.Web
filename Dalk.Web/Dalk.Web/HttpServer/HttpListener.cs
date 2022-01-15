@@ -42,6 +42,43 @@ namespace Dalk.Web.HttpServer
             }
         }
 
+        public void AcceptRequestAsync()
+        {
+            BeginAcceptRequest(InvokeRS);
+        }
+
+        private async void InvokeRS(IAsyncResult ar)
+        {
+            var tl = await EndAcceptRequest(ar);
+            AsyncRequestAccepted?.Invoke(tl);
+        }
+
+        public IAsyncResult BeginAcceptRequest(AsyncCallback callback)
+        {
+            return listener.BeginAcceptTcpClient(callback, null);
+        }
+
+        public event AsyncRequestAcceptEventHandler AsyncRequestAccepted;
+
+        public async Task<HttpRequest> EndAcceptRequest(IAsyncResult ar)
+        {
+            var tcp = listener.EndAcceptTcpClient(ar);
+            try {
+                var bytes = await ReadAllBytesAsync(tcp);
+                HttpRequest request = new HttpRequest(SplitByteArray(RemoveValues(bytes, 0x0d), 0x0a).ToArray(), bytes)
+                {
+                    sender = tcp
+                };
+                request.response = new HttpResponse(tcp);
+                return request;
+            }
+            catch (Exception ex)
+            {
+                LogError?.Invoke(ex.ToString());
+                return AcceptRequest();
+            }
+        }
+
         private static byte[] ReadAllBytes(TcpClient client)
         {
             int bytesRead = 0;
@@ -49,6 +86,18 @@ namespace Dalk.Web.HttpServer
             do
             {
                 bytesRead = client.GetStream().Read(recvbuf, 0, recvbuf.Length);
+                return recvbuf;
+
+            } while (bytesRead != 0);
+        }
+
+        private static async Task<byte[]> ReadAllBytesAsync(TcpClient client)
+        {
+            int bytesRead = 0;
+            byte[] recvbuf = new byte[8192];
+            do
+            {
+                bytesRead = await client.GetStream().ReadAsync(recvbuf, 0, recvbuf.Length);
                 return recvbuf;
 
             } while (bytesRead != 0);
@@ -84,4 +133,5 @@ namespace Dalk.Web.HttpServer
 
         public event Action<string> LogError;
     }
+    public delegate void AsyncRequestAcceptEventHandler(HttpRequest request);
 }
