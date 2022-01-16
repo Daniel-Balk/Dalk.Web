@@ -50,7 +50,7 @@ namespace Dalk.Web.HttpServer
         private async void InvokeRS(IAsyncResult ar)
         {
             var tl = await EndAcceptRequest(ar);
-            AsyncRequestAccepted?.Invoke(tl);
+            RequestAccepted?.Invoke(tl);
         }
 
         public IAsyncResult BeginAcceptRequest(AsyncCallback callback)
@@ -58,7 +58,27 @@ namespace Dalk.Web.HttpServer
             return listener.BeginAcceptTcpClient(callback, null);
         }
 
-        public event AsyncRequestAcceptEventHandler AsyncRequestAccepted;
+        public event RequestAcceptEventHandler RequestAccepted;
+        public void HandleEventBased()
+        {
+            while (true)
+            {
+                var r = AcceptRequest();
+                RequestAccepted?.Invoke(r);
+            }
+        }  
+        
+        public void HandleEventBasedAsync()
+        {
+            AsyncCallback h = (y) => { };
+            h = async (x) =>
+            {
+                var r = await EndAcceptRequest(x);
+                RequestAccepted?.Invoke(r);
+                BeginAcceptRequest(h);
+            };
+            BeginAcceptRequest(h);
+        }
 
         public async Task<HttpRequest> EndAcceptRequest(IAsyncResult ar)
         {
@@ -131,7 +151,12 @@ namespace Dalk.Web.HttpServer
             return lst.ToArray();                
         }
 
+        public void Stop()
+        {
+            listener.Stop();
+        }
+
         public event Action<string> LogError;
     }
-    public delegate void AsyncRequestAcceptEventHandler(HttpRequest request);
+    public delegate void RequestAcceptEventHandler(HttpRequest request);
 }
