@@ -108,6 +108,13 @@ namespace Dalk.Web.HttpServer
             return response;
         }
 
+        public void Redirict(string path)
+        {
+            StatusCode = 301;
+            Headers["Location"] = path;
+            Send();
+        }
+
         bool sent = false;
         public void Send(bool close = true)
         {
