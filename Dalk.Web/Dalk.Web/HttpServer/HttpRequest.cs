@@ -99,18 +99,22 @@ namespace Dalk.Web.HttpServer
             hab.RemoveAt(0);
             bool switchToBody = false;
             int i = 0;
+            bool j = false;
+            int k = 0;
+            ctn.Clear();
             hab.ForEach(x =>
             {
                 var xs = Encoding.UTF8.GetString(x);
-                if (string.IsNullOrWhiteSpace(xs))
+                if (!string.IsNullOrWhiteSpace(xs))
                 {
                     if (i + 1 < hab.Count)
                     {
                         if (!Encoding.UTF8.GetString(hab[i + 1]).Contains(": "))
                         {
-                            switchToBody = true;
+                            j = true;
                         }
                     }
+                    i++;
                 }
                 if (!switchToBody)
                 {
@@ -128,9 +132,18 @@ namespace Dalk.Web.HttpServer
                 else
                 {
                     ctn.AddRange(x);
-                    ctn.Add(0x0a);
+                }
+                if (j)
+                {
+                    k++;
+                    switchToBody = k > 1;
                 }
             });
+            try
+            {
+                ctn.RemoveAt(0);
+            }
+            catch(Exception) { }
         }
 
         public HttpResponse GetResponse()
