@@ -7,11 +7,11 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Dalk-GitHub/Dalk.Web</RepositoryUrl>
-    <PackageTags>HttpListener, Web</PackageTags>
+    <PackageTags>HttpListener, Web, WebClient</PackageTags>
     <Nullable>disable</Nullable>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-    <Version>1.0.1</Version>
+    <Version>1.0.3</Version>
     <Description>A http library</Description>
   </PropertyGroup>
 

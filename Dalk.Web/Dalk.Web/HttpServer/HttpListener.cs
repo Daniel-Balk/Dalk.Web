@@ -99,10 +99,11 @@ namespace Dalk.Web.HttpServer
             }
         }
 
-        private static byte[] ReadAllBytes(TcpClient client)
+        public int BufferSize { get; set; } = 8192;
+        private byte[] ReadAllBytes(TcpClient client)
         {
             int bytesRead = 0;
-            byte[] recvbuf = new byte[8192];
+            byte[] recvbuf = new byte[BufferSize];
             do
             {
                 bytesRead = client.GetStream().Read(recvbuf, 0, recvbuf.Length);
@@ -111,10 +112,10 @@ namespace Dalk.Web.HttpServer
             } while (bytesRead != 0);
         }
 
-        private static async Task<byte[]> ReadAllBytesAsync(TcpClient client)
+        private async Task<byte[]> ReadAllBytesAsync(TcpClient client)
         {
             int bytesRead = 0;
-            byte[] recvbuf = new byte[8192];
+            byte[] recvbuf = new byte[BufferSize];
             do
             {
                 bytesRead = await client.GetStream().ReadAsync(recvbuf, 0, recvbuf.Length);
