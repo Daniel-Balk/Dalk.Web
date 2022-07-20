@@ -25,6 +25,7 @@ namespace Dalk.Web
             headers.ToList().ForEach((h) =>
             {
                 wr.Headers.Add(h.Key, h.Value);
+
             });
             wr.Timeout = timeout;
             wr.ContentType = contentType;
