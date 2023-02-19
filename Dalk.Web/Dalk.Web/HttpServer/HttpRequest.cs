@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Dalk.Web.HttpServer.WebSockets;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Dalk.Web.HttpServer
@@ -151,9 +153,45 @@ namespace Dalk.Web.HttpServer
             return response;
         }
         internal TcpClient sender;
+        internal int bufferSize;
+
         public TcpClient GetSender()
         {
             return sender;
+        }
+
+        public bool IsWebsocket { get; private set; } = false;
+        public WebSocket WebSocket { get; private set; }
+
+        public WebSocket AcceptWebSocket()
+        {
+            response.wsclose = false;
+
+            var key = Headers["Sec-WebSocket-Key"] + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+            var sha = SHA1.Create();
+            var hash = sha.ComputeHash(Encoding.Default.GetBytes(key));
+            var accept = Convert.ToBase64String(hash);
+            response.Headers["Sec-WebSocket-Accept"] = accept;
+            response.StatusCode = 101;
+            response.Headers["Upgrade"] = "websocket";
+            response.Headers["Connection"] = "Upgrade";
+
+            WebSocket = new WebSocket(sender);
+            response.Send();
+            return WebSocket;
+        }
+
+        internal bool Proof()
+        {
+            if (Headers.ContainsKey("Upgrade"))
+            {
+                if (Headers["Upgrade"].Contains("websocket"))
+                {
+                    response.wsclose = true;
+                    IsWebsocket = true;
+                }
+            }
+            return true;
         }
     }
 }

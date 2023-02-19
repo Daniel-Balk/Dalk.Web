@@ -10,6 +10,8 @@ namespace Dalk.Web.HttpServer
 {
     public class HttpResponse
     {
+        internal HttpRequest request;
+        internal bool wsclose = false;
         public Stream GetStream() => tcp.GetStream();
         private const string HttpVerion = "HTTP/1.1";
         private readonly TcpClient tcp;
@@ -116,7 +118,7 @@ namespace Dalk.Web.HttpServer
         }
 
         bool sent = false;
-        public void Send(bool close = true)
+        public void Send(bool close = false)
         {
             if (!sent)
             {
@@ -127,6 +129,8 @@ namespace Dalk.Web.HttpServer
                     tcp.GetStream().Close();
                 if (close)
                     tcp.Close();
+                if(wsclose)
+                    tcp.Close();
             }
             else
             {
@@ -134,7 +138,7 @@ namespace Dalk.Web.HttpServer
             }
         }
 
-        public async Task SendAsync(bool close = true)
+        public async Task SendAsync(bool close = false)
         {
             if (!sent)
             {
@@ -144,6 +148,8 @@ namespace Dalk.Web.HttpServer
                 if (close)
                     tcp.GetStream().Close();
                 if (close)
+                    tcp.Close();
+                if (wsclose)
                     tcp.Close();
             }
             else
