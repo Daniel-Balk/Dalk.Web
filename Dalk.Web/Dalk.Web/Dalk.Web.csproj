@@ -3,17 +3,18 @@
   <PropertyGroup>
     <TargetFrameworks>net5.0;net6.0;netcoreapp3.1;net45;net451;net452;net46;net461;net462;net47;net471;net472;net48</TargetFrameworks>
     <Company>Dalk</Company>
-    <Authors>Dalk</Authors>
+    <Authors>DalkYouTube</Authors>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Dalk-GitHub/Dalk.Web</RepositoryUrl>
-    <PackageTags>HttpListener, Web, WebClient</PackageTags>
+    <PackageTags>HttpListener, Web, WebClient, WebSocket</PackageTags>
     <Nullable>disable</Nullable>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
     <Version>1.0.4</Version>
-    <Description>A http library</Description>
+    <Description>A http library supporting websockets</Description>
     <SignAssembly>False</SignAssembly>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net5.0|AnyCPU'">
@@ -74,6 +75,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="..\..\Readme.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
